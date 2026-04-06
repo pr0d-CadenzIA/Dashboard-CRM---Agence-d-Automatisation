@@ -32,7 +32,13 @@
       "WebFetch(domain:*)",
       "Skill(*)"
     ],
-    "deny": [
-    ]
+    "deny": []
+  },
+  "enabledMcpjsonServers": [
+    "context7",
+    "playwright"
+  ],
+  "enabledPlugins": {
+    "playwright@claude-plugins-official": true
   }
 }

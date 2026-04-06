@@ -1,0 +1,73 @@
+schema: spec-driven
+
+context: |
+  ## Projet
+  Dashboard CRM sur mesure pour une agence d'automatisation (usage interne, entrepreneur solo).
+  Cible : TPE/PME et professions libérales en France.
+  Design professionnel, sobre et épuré (inspiré de Hubspot / Salesforce).
+  Architecture 100% frontend pour le MVP — aucun serveur, aucune base de données.
+
+  ## Stack technique
+  - Build/Dev : Vite ^5.x
+  - Framework UI : React ^18.x avec TypeScript strict (`strict: true`)
+  - Styling : Tailwind CSS ^3.x
+  - Composants UI : Shadcn UI (toasts, cards, tables, drag & drop)
+  - Graphiques : Recharts ^2.x
+  - Parsing CSV : PapaParse ^5.x (`dynamicTyping: true` pour montantDeal)
+  - State global : Zustand ^4.x (une seule slice `CRMStore` pour le MVP)
+  - Pas de React Router — navigation par rendu conditionnel basé sur le store
+
+  ## Architecture des vues
+  - `ImportView` : affichée si `store.rows` est vide
+  - `DashboardLayout` : affichée si `store.rows` contient des données
+    - `ExecutiveView` : KPIs (Revenu Sécurisé, Pipeline Actif)
+    - `FocusModeView` : table filtrée des actions urgentes
+
+  ## Schéma de données (CRMRow)
+  Colonnes CSV → champs TypeScript :
+  - `Task Name` → `taskName: string` ("Prénom Nom - Nom Entreprise")
+  - `Status` → `status: DealStatus` (prospect | qualifié | négociation | gagné - en cours | perdu)
+  - `Date Created` → `dateCreated: string` (YYYY-MM-DD)
+  - `Due Date` → `dueDate: string` (YYYY-MM-DD, peut être vide)
+  - `Start Date` → `startDate: string` (YYYY-MM-DD, peut être vide)
+  - `Assignees` → `assignees: string`
+  - `Priority` → `priority: Priority` (low | medium | high)
+  - `Tags` → `tags: string[]` (split sur "|")
+  - `Task Content` → `taskContent: string`
+  - `Montant Deal` → `montantDeal: number`
+
+  ## Logique métier clé
+  - Revenu Sécurisé : SUM(montantDeal) où status.includes("gagné")
+  - Pipeline Actif : SUM(montantDeal) où !status.includes("gagné") && status !== "perdu"
+  - Focus Mode — Urgence : dueDate échue ou dans les 2 prochains jours
+  - Focus Mode — Stagnation : priority === "high" ET (today - dateCreated) > 15 jours
+  - Extraction entreprise : taskName.split(' - ')[1]?.trim() ?? taskName
+
+  ## Validation à l'import
+  - Bloquant : les 10 colonnes doivent être présentes (vérification par nom exact) → toast d'erreur, import rejeté
+  - Non-bloquant : Status ou Montant Deal vide/invalide → toast d'avertissement, import accepté
+  - dueDate vide : ligne exclue du filtre Urgence sans erreur
+
+  ## Conventions de code
+  - Composants : PascalCase, un composant par fichier
+  - Hooks custom préfixés `use` (ex: `useCRMStore`, `useFocusRows`)
+  - Types et interfaces dans `src/types/crm.ts`
+  - Pas de `any` — typage strict
+  - Langue : interface en français, code et noms de variables en anglais/camelCase
+
+  ## Hors-périmètre absolu (ne jamais implémenter)
+  - Authentification / Login
+  - Vues managériales ou filtres par employés
+  - Serveur SMTP / envoi d'emails côté serveur
+  - Module de facturation
+  - Base de données ou backend (MVP uniquement)
+
+rules:
+  proposal:
+    - Toujours préciser si la feature est dans le périmètre MVP, V1 ou V2
+    - Inclure une section "Hors-périmètre" explicite
+    - Garder les proposals sous 400 mots
+  tasks:
+    - Découper en tâches de max 1-2h chacune
+    - Chaque tâche doit mentionner le composant ou fichier concerné
+    - Toujours inclure une tâche de validation (test manuel ou snapshot)
