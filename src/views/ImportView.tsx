@@ -58,13 +58,13 @@ export function ImportView() {
   const handleDragLeave = () => setIsDragOver(false)
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+    <div className="relative z-10 min-h-screen flex items-center justify-center p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-primary/10">
             <Upload className="h-7 w-7 text-primary" />
           </div>
-          <CardTitle className="text-2xl">CRM Dashboard</CardTitle>
+          <CardTitle className="text-2xl">Dashboard Agence CadenzIA</CardTitle>
           <CardDescription>
             Importez votre fichier CSV pour accéder au tableau de bord.
           </CardDescription>
@@ -77,8 +77,8 @@ export function ImportView() {
             onDragLeave={handleDragLeave}
             className={`cursor-pointer rounded-lg border-2 border-dashed p-8 text-center transition-colors ${
               isDragOver
-                ? "border-gray-900 bg-gray-100"
-                : "border-gray-200 bg-gray-50 hover:border-gray-400 hover:bg-gray-100"
+                ? "border-blue-400 bg-blue-50/50"
+                : "border-white/60 bg-white/30 hover:border-blue-300 hover:bg-white/50"
             } ${isLoading ? "pointer-events-none opacity-50" : ""}`}
           >
             <Upload className={`mx-auto mb-3 h-8 w-8 ${isDragOver ? "text-gray-900" : "text-gray-400"}`} />

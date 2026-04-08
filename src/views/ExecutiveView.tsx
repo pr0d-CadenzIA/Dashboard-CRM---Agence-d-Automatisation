@@ -152,7 +152,7 @@ export function ExecutiveView() {
                       <stop offset="95%" stopColor="#60a5fa" stopOpacity={0} />
                     </linearGradient>
                   </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#f3f4f6" />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
                   <XAxis
                     dataKey="mois"
                     tick={{ fontSize: 11, fill: "#9ca3af" }}

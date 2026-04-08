@@ -1,5 +1,12 @@
 @import "tailwindcss";
 
+/* ── Ambient blob animation ── */
+@keyframes blob-move {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33%       { transform: translate(40px, -30px) scale(1.05); }
+  66%       { transform: translate(-20px, 20px) scale(0.95); }
+}
+
 @theme {
   --color-background: hsl(0 0% 100%);
   --color-foreground: hsl(240 10% 3.9%);
@@ -26,7 +33,39 @@
     border-color: var(--color-border);
   }
   body {
-    background-color: var(--color-background);
+    background: linear-gradient(135deg, #f0f4ff 0%, #ede9ff 50%, #fce7f3 100%);
+    min-height: 100vh;
     color: var(--color-foreground);
+  }
+}
+
+@layer components {
+  /* ── Liquid Glass surface ── */
+  .glass-card {
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    box-shadow:
+      0 4px 24px rgba(0, 0, 0, 0.06),
+      inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  }
+
+  /* ── Ambient blobs ── */
+  .blob {
+    position: fixed;
+    border-radius: 9999px;
+    filter: blur(100px);
+    opacity: 0.6;
+    pointer-events: none;
+    animation: blob-move 18s ease-in-out infinite;
+    z-index: 0;
+  }
+  .blob-blue  { background: #93c5fd; width: 500px; height: 500px; top: -100px;  left: -100px;  animation-delay: 0s;  }
+  .blob-violet{ background: #c4b5fd; width: 400px; height: 400px; top: 40%;     right: -80px;  animation-delay: -6s; }
+  .blob-rose  { background: #f9a8d4; width: 350px; height: 350px; bottom: -80px;left: 30%;     animation-delay: -12s;}
+
+  @media (prefers-reduced-motion: reduce) {
+    .blob { animation: none; }
   }
 }

@@ -7,6 +7,7 @@ export type FocusReason = "urgent" | "stagnation" | "urgent+stagnation"
 export interface FocusRow {
   row: CRMRow
   reason: FocusReason
+  storeIndex: number  // index original dans store.rows pour updateRow
 }
 
 const DAY_MS = 24 * 60 * 60 * 1000
@@ -27,7 +28,7 @@ export function useFocusRows(): FocusRow[] {
 
     const result: FocusRow[] = []
 
-    for (const row of rows) {
+    rows.forEach((row, storeIndex) => {
       const dueDate = toDateOnly(row.dueDate)
       const dateCreated = toDateOnly(row.dateCreated)
 
@@ -38,13 +39,13 @@ export function useFocusRows(): FocusRow[] {
         today.getTime() - dateCreated.getTime() > 15 * DAY_MS
 
       if (isUrgent && isStagnant) {
-        result.push({ row, reason: "urgent+stagnation" })
+        result.push({ row, reason: "urgent+stagnation", storeIndex })
       } else if (isUrgent) {
-        result.push({ row, reason: "urgent" })
+        result.push({ row, reason: "urgent", storeIndex })
       } else if (isStagnant) {
-        result.push({ row, reason: "stagnation" })
+        result.push({ row, reason: "stagnation", storeIndex })
       }
-    }
+    })
 
     // Tri : urgent d'abord, puis par dueDate croissante
     result.sort((a, b) => {
